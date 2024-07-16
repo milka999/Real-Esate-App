@@ -1,79 +1,157 @@
 //import Multiselect from 'multiselect-react-dropdown'
 import { useState } from "react";
-export default function Filters(){
+import Multiselect from "multiselect-react-dropdown";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
-    const cities = [
-        {
-            id: 1,
-            name: 'Podgorica',
-            checked: false
-        },
-        {
-            id: 2,
-            name: 'Nikšić',
-            checked: false
-        }
-    ];
+export default function Filters() {
+  const propertyType = [
+    { id: 1, name: "Stan" },
+    { id: 2, name: "Kuća" },
+    { id: 3, name: "Poslovni prostor" },
+    { id: 4, name: "Zemljište" },
+  ];
 
-    const neigborhoods = [
-        {
-            id: 1,
-            name: 'Blok 5',
-            city_id: 1,
-            checked: false
-        },
-        {
-            id: 2,
-            name: 'Zabjelo',
-            city_id: 1,
-            checked: false
-        },
-        {
-            id: 3,
-            name: 'Palestina',
-            city_id : 2,
-            checked: false
-        },
-        {
-            id: 4,
-            name: 'Rastoci',
-            city_id: 2,
-            checked: false
-        }
-    ];
+  const cities = [
+    {
+      id: 1,
+      name: "Podgorica",
+      checked: false,
+    },
+    {
+      id: 2,
+      name: "Nikšić",
+      checked: false,
+    },
+  ];
 
-    const [citiesList, setCitiesList] = useState(cities);
+  const neigborhoods = [
+    {
+      id: 1,
+      name: "Blok 5",
+      city_id: 1,
+      checked: false,
+    },
+    {
+      id: 2,
+      name: "Zabjelo",
+      city_id: 1,
+      checked: false,
+    },
+    {
+      id: 3,
+      name: "Palestina",
+      city_id: 2,
+      checked: false,
+    },
+    {
+      id: 4,
+      name: "Rastoci",
+      city_id: 2,
+      checked: false,
+    },
+  ];
 
-    function handleToggle(cityId){
-        const list = [...citiesList];
-        const city = list.find(
-            c => c.id === cityId
-        );
-        city.checked = !city.checked;
-        setCitiesList(list);
-        console.log(cities);
-    }
+  const [selectedValueCity, setSelectedValueCity] = useState({});
+  const [selectedValueNeigborhood, setSelectedValueNeighborhood] = useState({});
+  const [selectedValueType, setSelectedValueType] = useState({});
 
-    {/* TODO: makni ove čekboxove i zamijeni sa multiselct dropdown-om */}
+  // trbaće da se promijene sve ove funkcije da bi slale odgovarajuće vrijednost back-u
+  function onSelectCity() {
+    setSelectedValueCity({});
+  }
 
-    const cityCheckboxes = cities.map(city => <><input type="checkbox" value={city.id} id={city.id} onToggle={() => handleToggle(city.id)}/><label htmlFor={city.id}>{city.name}</label></>);
-    const neigborhoodsFiltered = neigborhoods.filter(hood => hood.city_id === 2);
-    const neigborhoodscheck = neigborhoodsFiltered.map(hood => <><input type="checkbox" value={hood.id} id={hood.id}/><label htmlFor={hood.id}>{hood.name}</label></>)
+  function onRemoveCity() {
+    setSelectedValueCity({});
+  }
 
-    return (
-        <div className="filters">
-            <form>
-                <h3>Opština</h3>
-                <div className="checkboxes">
-                    {cityCheckboxes}
-                </div>
+  function onSelectNeigborhood() {
+    setSelectedValueNeighborhood({});
+  }
 
-                {/* biće kodniciono da se renderuje zavisno od grada koji je odabran */}
-                <h3>Naselje</h3>
-                <div className="checkboxes">
-                    {neigborhoodscheck}
-                </div>
-            </form>
+  function onRemoveNeighborhood() {
+    setSelectedValueNeighborhood({});
+  }
+
+  function onSelectType() {
+    setSelectedValueType({});
+  }
+
+  function onRemoveType() {
+    setSelectedValueType({});
+  }
+
+  return (
+    <div className="filters">
+      <form>
+        <div id="filters-container">
+          <div>
+            <Multiselect
+              options={cities}
+              selectedValues={selectedValueCity}
+              onSelect={onSelectCity}
+              onRemove={onRemoveCity}
+              displayValue="name"
+              placeholder="Odaberite grad"
+            />
+          </div>
+          <div>
+            <Multiselect
+              options={neigborhoods}
+              selectedValues={selectedValueNeigborhood}
+              onSelect={onSelectNeigborhood}
+              onRemove={onRemoveNeighborhood}
+              displayValue="name"
+              placeholder="Odaberite naselje"
+            />
+          </div>
+          <div>
+            <Multiselect
+              options={propertyType}
+              selectedValues={selectedValueType}
+              onSelect={onSelectType}
+              onRemove={onRemoveType}
+              displayValue="name"
+              placeholder="Tip nekretnine"
+            />
+          </div>
+          <div>
+            <Multiselect
+              options={propertyType}
+              selectedValues={selectedValueType}
+              onSelect={onSelectType}
+              onRemove={onRemoveType}
+              displayValue="name"
+              placeholder="Struktura stana"
+            />
+          </div>
         </div>
-    )
+        <div className="sliders">
+          <div>
+            <div>
+              <p>Cijena: </p>
+              <Slider range />
+              <input className="number-input" type="number" />
+              <input className="number-input" type="number" />
+            </div>
+            <div>
+              <p>Kvadratura: </p>
+              <Slider range />
+              <input className="number-input" type="number" />
+              <input className="number-input" type="number" />
+            </div>
+          </div>
+          <div>
+            <button type="submit" className="btn-gray">
+              Resetuj Filtere
+            </button>
+            <button type="submit" className="btn-gray">
+              Filtriraj
+            </button>
+          </div>
+          {/* biće kodniciono da se renderuje zavisno od grada koji je odabran */}
+        </div>
+      </form>
+    </div>
+  );
 }

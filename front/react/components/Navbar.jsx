@@ -1,8 +1,24 @@
-export default function Navbar(){
-    return(
-        <div className="navbar">
-            <a href="">RealEstate</a>
-            <button>Login</button>
-        </div>
-    )
+import { useNavigate } from "react-router-dom";
+
+export default function Navbar() {
+  const navigate = useNavigate();
+
+  function handleClick() {
+    navigate("login");
+  }
+
+  return (
+    <div className="navbar">
+      <a href="/" id="logo">
+        RealEstate
+      </a>
+      <div id="navbar-items">
+        <a>Najam</a>
+        <a>Kupovina</a>
+      </div>
+      <button onClick={handleClick} className="btn-blue">
+        Login
+      </button>
+    </div>
+  );
 }
