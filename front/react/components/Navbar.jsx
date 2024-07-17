@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -13,8 +14,8 @@ export default function Navbar() {
         RealEstate
       </a>
       <div id="navbar-items">
-        <a>Najam</a>
-        <a>Kupovina</a>
+        <Link to="/izdavanje">Izdavanje</Link>
+        <Link to="/kupovina">Kupovina</Link>
       </div>
       <button onClick={handleClick} className="btn-blue">
         Login

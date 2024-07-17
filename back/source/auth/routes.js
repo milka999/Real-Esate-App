@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const {
-    first_name,
-    last_name,
+    firstName,
+    lastName,
     email,
     password,
-    phone_number,
+    phoneNumber,
     role_id = 1,
   } = req.body;
 
@@ -24,11 +24,11 @@ router.post("/register", async (req, res) => {
         `;
 
     const result = await pool.query(newUserQuery, [
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       hashedPassword,
-      phone_number,
+      phoneNumber,
       role_id,
     ]);
 

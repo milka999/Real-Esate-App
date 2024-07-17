@@ -3,34 +3,24 @@ import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import Carousel from "./Carousel";
 import Footer from "./Footer";
-
-const listings = [
-  {
-    id: 1,
-    title: "Listing 1",
-    price: "$100",
-    location: "New York",
-    imgUrl: "image1.jpg",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    contact: "123456789",
-    date: "2023-07-12",
-  },
-  {
-    id: 2,
-    title: "Listing 2",
-    price: "$200",
-    location: "Los Angeles",
-    imgUrl: "image2.jpg",
-    description: "Description 2",
-    contact: "987654321",
-    date: "2023-07-11",
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Listing() {
+  const [listing, setListing] = useState([]);
   const { id } = useParams();
-  const listing = listings.find((l) => l.id === parseInt(id));
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/api/v1/listings/single/${id}`)
+      .then((response) => {
+        console.log(response.data.rows[0]);
+        setListing(response.data.rows[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [id]);
 
   if (!listing) {
     return <div>Listing not found</div>;

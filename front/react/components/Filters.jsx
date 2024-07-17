@@ -1,29 +1,36 @@
 //import Multiselect from 'multiselect-react-dropdown'
-import { useState } from "react";
 import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function Filters() {
-  const propertyType = [
-    { id: 1, name: "Stan" },
-    { id: 2, name: "Kuća" },
-    { id: 3, name: "Poslovni prostor" },
-    { id: 4, name: "Zemljište" },
-  ];
+  const [propertyType, setPropertyType] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/v1/types")
+      .then((response) => {
+        console.log(response.data);
+        setPropertyType(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
-  const cities = [
-    {
-      id: 1,
-      name: "Podgorica",
-      checked: false,
-    },
-    {
-      id: 2,
-      name: "Nikšić",
-      checked: false,
-    },
-  ];
+  const [cities, setCities] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/v1/cities")
+      .then((response) => {
+        console.log(response.data);
+        setCities(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const neigborhoods = [
     {
