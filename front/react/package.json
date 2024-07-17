@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.7.2",
     "multiselect-react-dropdown": "^2.0.25",
     "rc-slider": "^10.6.2",
     "react": "^18.3.1",
