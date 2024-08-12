@@ -29,7 +29,7 @@ export default function Register() {
       .then((response) => {
         const status = response.status;
         if (status === 200) {
-          window.location = "/";
+          window.location = "/login";
         }
       })
       .catch((error) => {

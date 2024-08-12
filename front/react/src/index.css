@@ -1,4 +1,17 @@
-@import "C:\Users\Milka\Downloads\pern-boilerplate-main\front\react\node_modules\react-image-gallery\styles\css\image-gallery.css";
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html {
+    font-family: "Sora", system-ui, sans-serif;
+  }
+}
+
+/* @import "C:\Users\Milka\Downloads\pern-boilerplate-main\front\react\node_modules\react-image-gallery\styles\css\image-gallery.css";
 
 * {
   font-family: Arial;
@@ -34,9 +47,9 @@ body {
   color: rgb(69, 67, 67);
 }
 
-/* .lighter {
+ .lighter {
   color: darkgray;
-} */
+} 
 
 .listing-text-container > {
   margin: 10px;
@@ -399,3 +412,4 @@ hr {
 ul {
   list-style-type: none;
 }
+ */

@@ -1,6 +1,5 @@
 //import Multiselect from 'multiselect-react-dropdown'
 import Multiselect from "multiselect-react-dropdown";
-import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -137,13 +136,11 @@ export default function Filters() {
           <div>
             <div>
               <p>Cijena: </p>
-              <Slider range />
               <input className="number-input" type="number" />
               <input className="number-input" type="number" />
             </div>
             <div>
               <p>Kvadratura: </p>
-              <Slider range />
               <input className="number-input" type="number" />
               <input className="number-input" type="number" />
             </div>
