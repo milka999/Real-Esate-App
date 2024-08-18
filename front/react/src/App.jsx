@@ -26,12 +26,21 @@ function App() {
   return (
     <>
       <Navbar />
-      <Sorting brOglasa={3} />
-      <hr />
-      <Filters />
-      {listings.map((listing) => (
-        <ListingSmall key={listing.id} listing={listing} />
-      ))}
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-1/6 bg-gray-100 p-4">
+          <Sorting brOglasa={3} />
+          <hr className="my-4" />
+          <Filters />
+        </div>
+
+        {/* Main content */}
+        <div className="w-5/6 p-4">
+          {listings.map((listing) => (
+            <ListingSmall key={listing.id} listing={listing} />
+          ))}
+        </div>
+      </div>
       <Footer />
     </>
   );
