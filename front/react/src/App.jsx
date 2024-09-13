@@ -28,14 +28,14 @@ function App() {
       <Navbar />
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-1/6 bg-gray-100 p-4">
+        <div className="">
           <Sorting brOglasa={3} />
           <hr className="my-4" />
           <Filters />
         </div>
 
         {/* Main content */}
-        <div className="w-5/6 p-4">
+        <div className="">
           {listings.map((listing) => (
             <ListingSmall key={listing.id} listing={listing} />
           ))}

@@ -28,28 +28,38 @@ export default function Login() {
   return (
     <>
       <NavbarLogin />
-      <form className="user-form" onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="email"
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button type="submit" className="btn-blue">
-            Uloguj se
-          </button>
-        </div>
-      </form>
-      <p id="reg-link">
-        Nemate nalog? <Link to="/register">Registrujte se</Link>
-      </p>
+      <div className="w-1/2 mx-auto m-3 max-w-md">
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col">
+            <input
+              type="email"
+              placeholder="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="p-3 border-2 border-green-500 rounded-md m-2 mt-10"
+            />
+            <input
+              type="password"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="p-3 border-2 border-green-500 rounded-md m-2"
+            />
+            <button
+              type="submit"
+              className="bg-green-600 rounded-md text-black p-2 hover:bg-black hover:text-white hover:border-green-600 hover:border-solid hover:border-2 w-1/3 mx-auto m-2"
+            >
+              Uloguj se
+            </button>
+          </div>
+        </form>
+        <p className="text-center">
+          Nemate nalog?{" "}
+          <Link to="/register" className="text-green-500 hover:text-green-700">
+            Registrujte se
+          </Link>
+        </p>
+      </div>
     </>
   );
 }
