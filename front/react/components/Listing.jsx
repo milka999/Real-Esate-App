@@ -28,53 +28,78 @@ export default function Listing() {
   }
 
   return (
-    <>
+    <div className="bg-gray-100">
       <Navbar />
-      <div className="flex flex-col m-5">
-        <h1 className="text-2xl">{listing.title}</h1>
-        <div className="listing-info">
+      <div className="flex flex-col items-center px-4 sm:px-8 lg:px-16 xl:px-32 my-10">
+        <h1 className="text-2xl font-semibold text-center mb-6">
+          {listing.title}
+        </h1>
+
+        <div className="w-full max-w-4xl">
           {/*  <Carousel /> */}
-          <img src={listing.img_url} className="mt-5 mb-5"></img>
-          <p className="font-light">{listing.description}</p>
-          <div className="flex flex-col p-4 mt-2">
-            <h2 className="text-lg font-semibold mt-5 mb-2">
+          <img
+            src={listing.img_url}
+            alt={listing.title}
+            className="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg mb-6"
+          />
+          <p className="font-light mb-6">{listing.description}</p>
+          <hr className="mb-6" />
+
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold mb-4">
               Osnovne karakteristike
             </h2>
-            <ul>
-              <li>Lokacija: {listing.location}</li>
-              <li>Broj Soba: {listing.numberOfRooms}</li>
-              <li>Broj Kupatila: {listing.numberOfBathrooms}</li>
-              <li>Kvadratura {listing.size}</li>
-              <li>Cijena: {listing.price}€</li>
-              <li>Kontakt telefon: {listing.contact}</li>
+            <ul className="ml-4 space-y-2">
+              <li>
+                <strong>Lokacija:</strong> {listing.location}
+              </li>
+              <li>
+                <strong>Broj Soba:</strong> {listing.numberOfRooms}
+              </li>
+              <li>
+                <strong>Broj Kupatila:</strong> {listing.numberOfBathrooms}
+              </li>
+              <li>
+                <strong>Kvadratura:</strong> {listing.size} m²
+              </li>
+              <li>
+                <strong>Cijena:</strong> {listing.price}€
+              </li>
+              <li>
+                <strong>Kontakt telefon:</strong> {listing.contact}
+              </li>
             </ul>
           </div>
         </div>
-        <div className="">
+
+        <hr className="w-full max-w-4xl mt-10 mb-6" />
+
+        <div className="w-full max-w-4xl">
           <form>
-            <div className="border-2 border-gray-500 rounded-md flex flex-col p-4">
-              <h3>Pošaljite upit</h3>
+            <div className="flex flex-col">
+              <h3 className="text-lg font-semibold mb-4">Pošaljite upit</h3>
+
               <input
                 type="text"
                 placeholder="Ime"
-                className="p-3 border-2 border-gray-400 rounded-md m-2 mt"
+                className="p-3 border-2 border-gray-300 rounded-md mb-4"
               />
               <input
                 type="text"
                 placeholder="Prezime"
-                className="p-3 border-2 border-gray-400 rounded-md m-2"
+                className="p-3 border-2 border-gray-300 rounded-md mb-4"
               />
-              {/* fali validacija za broj telefona */}
               <input
                 type="text"
                 placeholder="Broj Telefona"
-                className="p-3 border-2 border-gray-400 rounded-md m-2"
+                className="p-3 border-2 border-gray-300 rounded-md mb-4"
               />
               <textarea
-                className="p-3 border-2 border-gray-400 rounded-md m-2"
                 placeholder="Dodatne informacije"
+                className="p-3 border-2 border-gray-300 rounded-md mb-4"
+                rows="5"
               ></textarea>
-              <button className="bg-green-600 rounded-md text-black p-2 hover:bg-black hover:text-white hover:border-green-600 hover:border-solid hover:border-2 w-1/3 mx-auto m-2">
+              <button className="bg-green-600 text-white rounded-md p-3 hover:bg-green-700 w-full sm:w-1/3 mx-auto">
                 Pošalji
               </button>
             </div>
@@ -82,6 +107,6 @@ export default function Listing() {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }

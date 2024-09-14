@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <>
-      <footer className="flex bg-black text-white justify-around">
+      <footer className="flex bg-black text-white justify-around mt-5 p-5">
         <div className="footer-section">
           <h3 className="text-green-600">Contact Us</h3>
           <p>123 Real Estate St. City, State, ZIP</p>

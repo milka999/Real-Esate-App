@@ -3,8 +3,15 @@ const queries = require("./queries");
 
 const getListings = async (req, res) => {
   try {
-    const { type_id, structure_id, min_price, max_price, location_id, sort } =
-      req.query;
+    const {
+      type, // Add the 'type' query parameter
+      type_id,
+      structure_id,
+      min_price,
+      max_price,
+      location_id,
+      sort,
+    } = req.query;
 
     // Base query
     let query = queries.getAllListings;
@@ -13,6 +20,11 @@ const getListings = async (req, res) => {
     let order_by = "";
 
     // Add conditions based on provided query parameters
+    if (type) {
+      // 'type' query param filters by listing_type_id
+      conditions.push(`listing_type_id = $${queryParams.length + 1}`);
+      queryParams.push(Number(type)); // Ensure it's a number
+    }
     if (type_id) {
       conditions.push(`type_id = $${queryParams.length + 1}`);
       queryParams.push(Number(type_id));
@@ -34,13 +46,13 @@ const getListings = async (req, res) => {
       queryParams.push(location_id);
     }
     if (sort) {
-      if (sort == "price_asc") {
+      if (sort === "price_asc") {
         order_by = "order by price asc";
-      } else if (sort == "price_desc") {
+      } else if (sort === "price_desc") {
         order_by = "order by price desc";
-      } else if (sort == "size_asc") {
+      } else if (sort === "size_asc") {
         order_by = "order by unit_size asc";
-      } else if (sort == "size_desc") {
+      } else if (sort === "size_desc") {
         order_by = "order by unit_size desc";
       }
     }
@@ -50,7 +62,7 @@ const getListings = async (req, res) => {
       query += " WHERE " + conditions.join(" AND ");
     }
     if (order_by !== "") {
-      query = query + " " + order_by;
+      query += " " + order_by;
     }
 
     const result = await pool.query(query, queryParams);

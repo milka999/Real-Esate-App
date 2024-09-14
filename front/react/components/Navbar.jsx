@@ -15,13 +15,13 @@ export default function Navbar() {
       </a>
       <div className="align-baseline pt-1">
         <Link
-          to="/izdavanje"
+          to="/?type=2"
           className="mr-10 hover:border-green-600 hover:border-solid hover:border-2 hover:rounded-lg p-1"
         >
           Izdavanje
         </Link>
         <Link
-          to="/kupovina"
+          to="/?type=1"
           className="mr-10 hover:border-green-600 hover:border-solid hover:border-2 hover:rounded-lg p-1"
         >
           Kupovina
