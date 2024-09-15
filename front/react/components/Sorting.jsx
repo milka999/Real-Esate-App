@@ -33,36 +33,32 @@ export default function Sorting() {
   }
 
   return (
-    <div className="sorting">
+    <div>
       <div>
-        <p>Sortiraj: </p>
-        <div>
-          <button onClick={handleOpen} className="btn-gray">
-            {sortiranje}
-          </button>
-          {open ? (
-            <ul className="menu">
-              <li className="menu-item">
-                <button onClick={handleSortPriceAsc}>Cijena (rastuće)</button>
-              </li>
-              <li className="menu-item">
-                <button onClick={handleSortPriceDesc}>
-                  Cijena (opadajuće)
-                </button>
-              </li>
-              <li className="menu-item">
-                <button onClick={handleSortSizeAsc}>
-                  Kvadratura (rastuće)
-                </button>
-              </li>
-              <li className="menu-item">
-                <button onClick={handleSortSizeDesc}>
-                  Kvadratura (opadajuće)
-                </button>
-              </li>
-            </ul>
-          ) : null}
-        </div>
+        <button
+          onClick={handleOpen}
+          className="border-2 border-black p-1 rounded-md hover:text-gray-700"
+        >
+          {sortiranje}
+        </button>
+        {open ? (
+          <ul className="menu">
+            <li className="menu-item">
+              <button onClick={handleSortPriceAsc}>Cijena (rastuće)</button>
+            </li>
+            <li className="menu-item">
+              <button onClick={handleSortPriceDesc}>Cijena (opadajuće)</button>
+            </li>
+            <li className="menu-item">
+              <button onClick={handleSortSizeAsc}>Kvadratura (rastuće)</button>
+            </li>
+            <li className="menu-item">
+              <button onClick={handleSortSizeDesc}>
+                Kvadratura (opadajuće)
+              </button>
+            </li>
+          </ul>
+        ) : null}
       </div>
     </div>
   );

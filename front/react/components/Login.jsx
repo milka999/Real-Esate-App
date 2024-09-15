@@ -14,6 +14,8 @@ export default function Login() {
       .post("http://localhost:3000/api/v1/auth/login", { email, password })
       .then((response) => {
         const status = response.status;
+        const token = response.data.token;
+        localStorage.setItem("authToken", token);
         if (status === 200) {
           window.location = "/";
         }

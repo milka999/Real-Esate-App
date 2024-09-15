@@ -7,7 +7,7 @@ import "./index.css";
 import Register from "../components/Register.jsx";
 import Listing from "../components/Listing.jsx";
 import Carousel from "../components/Carousel.jsx";
-
+import NewListing from "../components/NewListing.jsx";
 const router = createBrowserRouter([
   {
     path: "",
@@ -29,11 +29,11 @@ const router = createBrowserRouter([
     path: "/slike",
     element: <Carousel />,
   },
-  /*
   {
     path: "/newListing",
     element: <NewListing />,
   },
+  /*
   {
     path: "/edit/:listingId",
     element: <EditListing />,

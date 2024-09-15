@@ -29,9 +29,10 @@ export default function ListingSmall({ listing }) {
           {listing.description.slice(0, 100)} ...
         </p>
         <div>
-          <p className="m-1 font-semibold">
-            Kontakt telefon: {listing.contact}
-          </p>
+          <div className="flex flex-row justify-between">
+            <p className="m-1 font-semibold">Kontakt telefon:</p>
+            <p>{listing.contact}</p>
+          </div>
           <div className="flex flex-row justify-between">
             <p className="m-1 font-semibold">Datum objavljivanja:</p>
             <p className="m-1">{formattedDate}</p>

@@ -31,52 +31,39 @@ export default function Filters() {
       });
   }, []);
 
-  const neigborhoods = [
-    {
-      id: 1,
-      name: "Blok 5",
-      city_id: 1,
-      checked: false,
-    },
-    {
-      id: 2,
-      name: "Zabjelo",
-      city_id: 1,
-      checked: false,
-    },
-    {
-      id: 3,
-      name: "Palestina",
-      city_id: 2,
-      checked: false,
-    },
-    {
-      id: 4,
-      name: "Rastoci",
-      city_id: 2,
-      checked: false,
-    },
-  ];
+  const [locations, setLocations] = useState([]);
 
   const [selectedValueCity, setSelectedValueCity] = useState({});
-  const [selectedValueNeigborhood, setSelectedValueNeighborhood] = useState({});
+  const [selectedValueLocation, setSelectedValueLocation] = useState({});
   const [selectedValueType, setSelectedValueType] = useState({});
 
-  // trbaće da se promijene sve ove funkcije da bi slale odgovarajuće vrijednost back-u
-  function onSelectCity() {
-    setSelectedValueCity({});
-  }
+  // trebaće da se promijene sve ove funkcije da bi slale odgovarajuće vrijednost back-u
+  const onSelectCity = (selectedList) => {
+    if (selectedList.length > 0) {
+      const cityId = selectedList[0].id;
+      axios
+        .get(`http://localhost:3000/api/v1/city/${cityId}/location`)
+        .then((response) => {
+          setLocations(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching locations:", error);
+        });
+    } else {
+      setLocations([]);
+    }
+  };
 
   function onRemoveCity() {
     setSelectedValueCity({});
   }
 
-  function onSelectNeigborhood() {
-    setSelectedValueNeighborhood({});
+  function onSelectLocation() {
+    setSelectedValueLocation({});
   }
 
-  function onRemoveNeighborhood() {
-    setSelectedValueNeighborhood({});
+  function onRemoveLocation() {
+    setSelectedValueLocation({});
   }
 
   function onSelectType() {
@@ -88,74 +75,104 @@ export default function Filters() {
   }
 
   return (
-    <div className="filters">
-      <form>
-        <div id="filters-container">
-          <div>
-            <Multiselect
-              options={cities}
-              selectedValues={selectedValueCity}
-              onSelect={onSelectCity}
-              onRemove={onRemoveCity}
-              displayValue="name"
-              placeholder="Odaberite grad"
-            />
-          </div>
-          <div>
-            <Multiselect
-              options={neigborhoods}
-              selectedValues={selectedValueNeigborhood}
-              onSelect={onSelectNeigborhood}
-              onRemove={onRemoveNeighborhood}
-              displayValue="name"
-              placeholder="Odaberite naselje"
-            />
-          </div>
-          <div>
-            <Multiselect
-              options={propertyType}
-              selectedValues={selectedValueType}
-              onSelect={onSelectType}
-              onRemove={onRemoveType}
-              displayValue="name"
-              placeholder="Tip nekretnine"
-            />
-          </div>
-          <div>
-            <Multiselect
-              options={propertyType}
-              selectedValues={selectedValueType}
-              onSelect={onSelectType}
-              onRemove={onRemoveType}
-              displayValue="name"
-              placeholder="Struktura stana"
-            />
-          </div>
+    <div className="h-screen w-[400px] ml-4 mr-4">
+      <div className="h-full flex flex-col shadow-sm">
+        <div className="flex flex-row justify-between ml-2 mb-5 mt-5">
+          <p>Filteri</p>
+          <button
+            type="reset"
+            className="border-2 border-black rounded-md p-0.5 hover:text-gray-500"
+          >
+            Resetuj Filtere
+          </button>
         </div>
-        <div className="sliders">
+        <form>
           <div>
             <div>
-              <p>Cijena: </p>
-              <input className="number-input" type="number" />
-              <input className="number-input" type="number" />
+              <Multiselect
+                options={cities}
+                selectedValues={selectedValueCity}
+                onSelect={onSelectCity}
+                onRemove={onRemoveCity}
+                displayValue="name"
+                placeholder="Odaberite grad"
+                className="border-2 border-black rounded-lg m-2"
+              />
             </div>
             <div>
-              <p>Kvadratura: </p>
-              <input className="number-input" type="number" />
-              <input className="number-input" type="number" />
+              <Multiselect
+                options={locations}
+                selectedValues={selectedValueLocation}
+                onSelect={onSelectLocation}
+                onRemove={onRemoveLocation}
+                displayValue="name"
+                placeholder="Odaberite naselje"
+                className="border-2 border-black rounded-lg m-2"
+              />
+            </div>
+            <div>
+              <Multiselect
+                options={propertyType}
+                selectedValues={selectedValueType}
+                onSelect={onSelectType}
+                onRemove={onRemoveType}
+                displayValue="name"
+                placeholder="Tip nekretnine"
+                className="border-2 border-black rounded-lg m-2"
+              />
+            </div>
+            <div>
+              <Multiselect
+                options={propertyType}
+                selectedValues={selectedValueType}
+                onSelect={onSelectType}
+                onRemove={onRemoveType}
+                displayValue="name"
+                placeholder="Struktura stana"
+                className="border-2 border-black rounded-lg m-2"
+              />
             </div>
           </div>
-          <div>
-            <button type="submit" className="btn-gray">
-              Resetuj Filtere
-            </button>
-            <button type="submit" className="btn-gray">
-              Filtriraj
-            </button>
+          <div className="sliders">
+            <div>
+              <div>
+                <p className="m-2">Cijena: </p>
+                <input
+                  className="border-2 border-black rounded-lg m-2 p-1"
+                  placeholder="Najniža"
+                  type="number"
+                />
+                <input
+                  className="border-2 border-black rounded-lg m-2 p-1"
+                  placeholder="Najviša"
+                  type="number"
+                />
+              </div>
+              <div>
+                <p className="m-2">Kvadratura: </p>
+                <input
+                  className="border-2 border-black rounded-lg m-2 p-1"
+                  placeholder="Najniža"
+                  type="number"
+                />
+                <input
+                  className="border-2 border-black rounded-lg m-2 p-1"
+                  placeholder="Najviša"
+                  type="number"
+                />
+              </div>
+            </div>
+            <div className="m-2">
+              <button
+                type="submit"
+                className="bg-green-500 border-2 border-black rounded-md p-0.5 hover:border-green-500"
+              >
+                Filtriraj
+              </button>
+            </div>
           </div>
-          {/* biće kodniciono da se renderuje zavisno od grada koji je odabran */}
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

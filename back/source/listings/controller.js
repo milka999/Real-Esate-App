@@ -11,6 +11,8 @@ const getListings = async (req, res) => {
       max_price,
       location_id,
       sort,
+      page = 1, // Page number, defaults to 1
+      limit = 12, // Number of listings per page, defaults to 12
     } = req.query;
 
     // Base query
@@ -65,9 +67,32 @@ const getListings = async (req, res) => {
       query += " " + order_by;
     }
 
+    // Pagination logic: calculate offset and limit
+    const offset = (page - 1) * limit;
+    query += ` LIMIT $${queryParams.length + 1} OFFSET $${
+      queryParams.length + 2
+    }`;
+    queryParams.push(Number(limit), Number(offset));
+
+    // Execute the query with pagination
     const result = await pool.query(query, queryParams);
 
-    res.status(200).json(result.rows);
+    // Get the total count of listings without pagination (for UI purposes)
+    const countQuery = queries.getAllListings; // Assuming `queries.getAllListings` is the base query without pagination
+    const countResult = await pool.query(
+      countQuery,
+      queryParams.slice(0, queryParams.length - 2)
+    ); // Use the same conditions, without LIMIT and OFFSET
+
+    const totalCount = countResult.rowCount; // Get total number of listings
+
+    // Return the listings and total count for pagination
+    res.status(200).json({
+      listings: result.rows,
+      total: totalCount, // Total number of listings for pagination
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+    });
   } catch (error) {
     console.error("Database query error:", error);
     res.status(500).json({ error: "Internal Server Error" });

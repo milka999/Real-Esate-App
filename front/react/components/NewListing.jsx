@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 export default function NewListing() {
   const [title, setTitle] = useState("");
@@ -26,7 +28,7 @@ export default function NewListing() {
 
   useEffect(() => {
     // Fetch user details (like user ID) from local storage or context
-    const token = localStorage.getItem("token"); // Assuming you store the token in local storage
+    const token = localStorage.getItem("authToken"); // Assuming you store the token in local storage
     if (!token) {
       // If no token, redirect to login
       navigate("/login");
@@ -108,203 +110,246 @@ export default function NewListing() {
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Naziv objekta"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          placeholder="Opis"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Cijena ili visina mjesečne rente"
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-        />
-        <input
-          type="number"
-          placeholder="Kvadratura"
-          value={unitSize}
-          onChange={(e) => setUnitSize(Number(e.target.value))}
-        />
-        <p>Da li uz objekat dolazi i parking mjesto</p>
-        <label htmlFor="parking-true">Da</label>
-        <input
-          id="parking-true"
-          type="radio"
-          name="parking"
-          value={true}
-          checked={parking === true}
-          onChange={() => setParking(true)}
-        />
-        <label htmlFor="parking-false">Ne</label>
-        <input
-          id="parking-false"
-          type="radio"
-          name="parking"
-          value={false}
-          checked={parking === false}
-          onChange={() => setParking(false)}
-        />
-
-        <p>Da li objekat ima svoju baštu</p>
-        <label htmlFor="garden-true">Da</label>
-        <input
-          id="garden-true"
-          type="radio"
-          name="garden"
-          value={true}
-          checked={garden === true}
-          onChange={() => setGarden(true)}
-        />
-        <label htmlFor="garden-false">Ne</label>
-        <input
-          id="garden-false"
-          type="radio"
-          name="garden"
-          value={false}
-          checked={garden === false}
-          onChange={() => setGarden(false)}
-        />
-
-        <p>Da li objekat ima terasu</p>
-        <label htmlFor="terrace-true">Da</label>
-        <input
-          id="terrace-true"
-          type="radio"
-          name="terrace"
-          value={true}
-          checked={terrace === true}
-          onChange={() => setTerrace(true)}
-        />
-        <label htmlFor="terrace-false">Ne</label>
-        <input
-          id="terrace-false"
-          type="radio"
-          name="terrace"
-          value={false}
-          checked={terrace === false}
-          onChange={() => setTerrace(false)}
-        />
-
-        <select name="city" onChange={handleCityChange}>
-          <option value="" disabled selected>
-            Grad
-          </option>
-          {cities.map((city) => (
-            <option key={city.id} value={city.id}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="location"
-          value={location}
-          onChange={(e) => setLocation(Number(e.target.value))}
+    <>
+      <Navbar></Navbar>
+      <h1 className="text-3xl font-semibold text-center mt-6">Novi oglas</h1>
+      <div>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col w-1/2 mx-auto mt-6"
         >
-          <option value="" disabled selected>
-            Naselje
-          </option>
-          {locations.map((loc) => (
-            <option key={loc.id} value={loc.id}>
-              {loc.name}
+          <input
+            type="text"
+            placeholder="Naziv objekta"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border-2 border-black rounded-md p-2 m-2"
+          />
+          <textarea
+            placeholder="Opis"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border-2 border-black rounded-md p-2 m-2"
+          />
+          <p className="ml-2">Cijena ili visina mjesečne rente:</p>
+          <input
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(Number(e.target.value))}
+            className="border-2 border-black rounded-md p-2 m-2"
+          />
+          <p className="ml-2">Kvadartura:</p>
+          <input
+            type="number"
+            value={unitSize}
+            onChange={(e) => setUnitSize(Number(e.target.value))}
+            className="border-2 border-black rounded-md p-2 m-2"
+          />
+          <p className="m-2">Da li uz objekat dolazi i parking mjesto?</p>
+          <div className="flex flex-row justify-around m-2">
+            <label htmlFor="parking-true">Da</label>
+            <input
+              id="parking-true"
+              type="radio"
+              name="parking"
+              value={true}
+              checked={parking === true}
+              onChange={() => setParking(true)}
+            />
+            <label htmlFor="parking-false">Ne</label>
+            <input
+              id="parking-false"
+              type="radio"
+              name="parking"
+              value={false}
+              checked={parking === false}
+              onChange={() => setParking(false)}
+            />
+          </div>
+
+          <p className="m-2">Da li objekat ima svoju baštu</p>
+          <div className="flex flex-row justify-around m-2">
+            <label htmlFor="garden-true">Da</label>
+            <input
+              id="garden-true"
+              type="radio"
+              name="garden"
+              value={true}
+              checked={garden === true}
+              onChange={() => setGarden(true)}
+            />
+            <label htmlFor="garden-false">Ne</label>
+            <input
+              id="garden-false"
+              type="radio"
+              name="garden"
+              value={false}
+              checked={garden === false}
+              onChange={() => setGarden(false)}
+            />
+          </div>
+          <p className="m-2">Da li objekat ima terasu</p>
+          <div className="flex flex-row justify-around m-2">
+            <label htmlFor="terrace-true">Da</label>
+            <input
+              id="terrace-true"
+              type="radio"
+              name="terrace"
+              value={true}
+              checked={terrace === true}
+              onChange={() => setTerrace(true)}
+            />
+            <label htmlFor="terrace-false">Ne</label>
+            <input
+              id="terrace-false"
+              type="radio"
+              name="terrace"
+              value={false}
+              checked={terrace === false}
+              onChange={() => setTerrace(false)}
+            />
+          </div>
+
+          <select
+            name="city"
+            onChange={handleCityChange}
+            className="p-2 rounded-md border-2 border-black m-2"
+          >
+            <option value="" disabled selected>
+              Grad
             </option>
-          ))}
-        </select>
+            {cities.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name}
+              </option>
+            ))}
+          </select>
 
-        <p>Namjena oglasa</p>
-        <label htmlFor="izdavanje">Izdavanje</label>
-        <input
-          type="radio"
-          name="listingType"
-          value={2}
-          id="izdavanje"
-          checked={listingType === 2}
-          onChange={() => setListingType(2)}
-        />
-        <label htmlFor="prodaja">Prodaja</label>
-        <input
-          type="radio"
-          name="listingType"
-          value={1}
-          id="prodaja"
-          checked={listingType === 1}
-          onChange={() => setListingType(1)}
-        />
-
-        <p>Tip nekretnine</p>
-        <label htmlFor="stan">Stan</label>
-        <input
-          type="radio"
-          name="type"
-          value={1}
-          id="stan"
-          checked={type === 1}
-          onChange={() => setType(1)}
-        />
-        <label htmlFor="kuca">Kuća</label>
-        <input
-          type="radio"
-          name="type"
-          value={2}
-          id="kuca"
-          checked={type === 2}
-          onChange={() => setType(2)}
-        />
-        <label htmlFor="poslovni-prostor">Poslovni prostor</label>
-        <input
-          type="radio"
-          name="type"
-          value={3}
-          id="poslovni-prostor"
-          checked={type === 3}
-          onChange={() => setType(3)}
-        />
-        <label htmlFor="plac">Plac</label>
-        <input
-          type="radio"
-          name="type"
-          value={4}
-          id="plac"
-          checked={type === 4}
-          onChange={() => setType(4)}
-        />
-
-        <select
-          name="structure"
-          value={structure}
-          onChange={(e) => setStructure(Number(e.target.value))}
-        >
-          <option value="" disabled selected>
-            Struktura objekta
-          </option>
-          {structures.map((structure) => (
-            <option key={structure.id} value={structure.id}>
-              {structure.name}
+          <select
+            name="location"
+            value={location}
+            onChange={(e) => setLocation(Number(e.target.value))}
+            className="p-2 rounded-md border-2 border-black m-2"
+          >
+            <option value="" disabled selected>
+              Naselje
             </option>
-          ))}
-        </select>
-        {/* Image upload field */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              setSelectedImage(e.target.files[0]);
-              uploadImage();
-            }
-          }}
-        />
+            {locations.map((loc) => (
+              <option key={loc.id} value={loc.id}>
+                {loc.name}
+              </option>
+            ))}
+          </select>
 
-        <button type="submit">Pošalji</button>
-      </form>
-    </div>
+          <p className="m-2">Namjena oglasa</p>
+          <div className="flex flex-row space-x-3 m-2">
+            <label htmlFor="izdavanje">Izdavanje</label>
+            <input
+              type="radio"
+              name="listingType"
+              value={2}
+              id="izdavanje"
+              checked={listingType === 2}
+              onChange={() => setListingType(2)}
+            />
+          </div>
+          <div className="flex flex-row space-x-3 m-2">
+            <label htmlFor="prodaja">Prodaja</label>
+            <input
+              type="radio"
+              name="listingType"
+              value={1}
+              id="prodaja"
+              checked={listingType === 1}
+              onChange={() => setListingType(1)}
+            />
+          </div>
+
+          <p className="m-2">Tip nekretnine</p>
+          <div className="flex flex-row space-x-3 m-2">
+            <label htmlFor="stan">Stan</label>
+            <input
+              type="radio"
+              name="type"
+              value={1}
+              id="stan"
+              checked={type === 1}
+              onChange={() => setType(1)}
+            />
+          </div>
+
+          <div className="flex flex-row space-x-3 m-2">
+            <label htmlFor="kuca">Kuća</label>
+            <input
+              type="radio"
+              name="type"
+              value={2}
+              id="kuca"
+              checked={type === 2}
+              onChange={() => setType(2)}
+            />
+          </div>
+          <div className="flex flex-row space-x-3 m-2">
+            <label htmlFor="poslovni-prostor">Poslovni prostor</label>
+            <input
+              type="radio"
+              name="type"
+              value={3}
+              id="poslovni-prostor"
+              checked={type === 3}
+              onChange={() => setType(3)}
+            />
+          </div>
+          <div className="flex flex-row space-x-3 m-2">
+            <label htmlFor="plac">Plac</label>
+            <input
+              type="radio"
+              name="type"
+              value={4}
+              id="plac"
+              checked={type === 4}
+              onChange={() => setType(4)}
+            />
+          </div>
+
+          <select
+            name="structure"
+            value={structure}
+            onChange={(e) => setStructure(Number(e.target.value))}
+            className="p-2 rounded-md border-2 border-black m-2"
+          >
+            <option value="" disabled selected>
+              Struktura objekta
+            </option>
+            {structures.map((structure) => (
+              <option key={structure.id} value={structure.id}>
+                {structure.name}
+              </option>
+            ))}
+          </select>
+          {/* Image upload field */}
+          <p className="m-2">Upload slika: </p>
+          <input
+            className="m-2"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setSelectedImage(e.target.files[0]);
+                uploadImage();
+              }
+            }}
+          />
+
+          <button
+            type="submit"
+            className="bg-green-500 border-2 border-black rounded-md p-0.5 hover:border-green-500 mb-10"
+          >
+            Pošalji
+          </button>
+        </form>
+      </div>
+      <Footer />
+    </>
   );
 }

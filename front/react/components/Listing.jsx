@@ -7,25 +7,41 @@ import Footer from "./Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+function mapBool(bool) {
+  if (bool === true) {
+    return "Da";
+  } else {
+    return "Ne";
+  }
+}
+
 export default function Listing() {
   const [listing, setListing] = useState([]);
   const { id } = useParams();
   const [formattedPrice, setFormattedPrice] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false); // Add state for form submission
 
   useEffect(() => {
     axios
       .get(`http://localhost:3000/api/v1/listings/single/${id}`)
       .then((response) => {
-        console.log(response.data.rows[0]);
         setListing(response.data.rows[0]);
         setFormattedPrice(
-          listing.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          response.data.rows[0].price
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         );
       })
       .catch((error) => {
         console.error(error);
       });
   }, [id]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // poziv ka beku, pošalji email na adresu korisnika koji je kreirao listing
+    setIsSubmitted(true);
+  };
 
   if (!listing) {
     return <div>Listing not found</div>;
@@ -40,7 +56,7 @@ export default function Listing() {
         </h1>
 
         <div className="w-full max-w-4xl">
-          {/*  <Carousel /> */}
+          {/* <Carousel /> */}
           <img
             src={listing.img_url}
             alt={listing.title}
@@ -55,16 +71,23 @@ export default function Listing() {
             </h2>
             <ul className="ml-4 space-y-2">
               <li>
-                <strong>Lokacija:</strong> {listing.location}
+                <strong>Lokacija:</strong> {listing.location_id}
               </li>
               <li>
-                <strong>Broj Soba:</strong> {listing.numberOfRooms}
+                <strong>Broj Soba:</strong> {listing.structure_id}
               </li>
               <li>
-                <strong>Broj Kupatila:</strong> {listing.numberOfBathrooms}
+                <strong>Obezbjeđeno parking mjesto:</strong>{" "}
+                {mapBool(listing.parking)}
               </li>
               <li>
-                <strong>Kvadratura:</strong> {listing.size} m²
+                <strong>Terasa:</strong> {mapBool(listing.terrace)}
+              </li>
+              <li>
+                <strong>Bašta:</strong> {mapBool(listing.garden)}
+              </li>
+              <li>
+                <strong>Kvadratura:</strong> {listing.unit_size} m²
               </li>
               <li>
                 <strong>Cijena:</strong> {formattedPrice}€
@@ -79,35 +102,50 @@ export default function Listing() {
         <hr className="w-full max-w-4xl mt-10 mb-6" />
 
         <div className="w-full max-w-4xl">
-          <form>
-            <div className="flex flex-col">
-              <h3 className="text-lg font-semibold mb-4">Pošaljite upit</h3>
+          {isSubmitted ? (
+            <p className="text-green-600 text-lg font-semibold text-center">
+              Upit uspješno poslat
+            </p>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col">
+                <h3 className="text-lg font-semibold mb-4">Pošaljite upit</h3>
 
-              <input
-                type="text"
-                placeholder="Ime"
-                className="p-3 border-2 border-gray-300 rounded-md mb-4"
-              />
-              <input
-                type="text"
-                placeholder="Prezime"
-                className="p-3 border-2 border-gray-300 rounded-md mb-4"
-              />
-              <input
-                type="tel"
-                placeholder="Broj Telefona"
-                className="p-3 border-2 border-gray-300 rounded-md mb-4"
-              />
-              <textarea
-                placeholder="Dodatne informacije"
-                className="p-3 border-2 border-gray-300 rounded-md mb-4"
-                rows="5"
-              ></textarea>
-              <button className="bg-green-600 text-white rounded-md p-3 hover:bg-green-700 w-full sm:w-1/3 mx-auto">
-                Pošalji
-              </button>
-            </div>
-          </form>
+                <input
+                  type="text"
+                  placeholder="Ime"
+                  required
+                  className="p-3 border-2 border-gray-300 rounded-md mb-4"
+                />
+                <input
+                  type="text"
+                  required
+                  placeholder="Prezime"
+                  className="p-3 border-2 border-gray-300 rounded-md mb-4"
+                />
+                <input
+                  type="tel"
+                  required
+                  placeholder="Broj Telefona"
+                  className="p-3 border-2 border-gray-300 rounded-md mb-4"
+                />
+                <input
+                  type="email"
+                  placeholder="Email adresa"
+                  required
+                  className="p-3 border-2 border-gray-300 rounded-md mb-4"
+                />
+                <textarea
+                  placeholder="Dodatne informacije"
+                  className="p-3 border-2 border-gray-300 rounded-md mb-4"
+                  rows="5"
+                ></textarea>
+                <button className="bg-green-600 text-white rounded-md p-3 hover:bg-green-700 w-full sm:w-1/3 mx-auto">
+                  Pošalji
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
       <Footer />
