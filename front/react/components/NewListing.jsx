@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function NewListing() {
   const [title, setTitle] = useState("");
@@ -17,44 +18,45 @@ export default function NewListing() {
   const [selectedImage, setSelectedImage] = useState(null); // Added for image upload
 
   const [cities, setCities] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [structures, setStructures] = useState([]);
+
+  const [userId, setUserId] = useState(null); // To store author (user) ID
+  const navigate = useNavigate();
+
   useEffect(() => {
+    // Fetch user details (like user ID) from local storage or context
+    const token = localStorage.getItem("token"); // Assuming you store the token in local storage
+    if (!token) {
+      // If no token, redirect to login
+      navigate("/login");
+    } else {
+      // Decode the token to get the user information (author ID)
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      setUserId(decodedToken.userId); // Set the user ID (author ID)
+    }
+
+    // Fetch cities and structures on mount
     axios
       .get("http://localhost:3000/api/v1/cities")
-      .then((response) => {
-        setCities(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+      .then((response) => setCities(response.data))
+      .catch((error) => console.error(error));
 
-  const [locations, setLocations] = useState([]);
+    axios
+      .get("http://localhost:3000/api/v1/structures")
+      .then((response) => setStructures(response.data))
+      .catch((error) => console.error(error));
+  }, [navigate]);
+
   const handleCityChange = (event) => {
     const selectedCityId = event.target.value;
-
     if (selectedCityId) {
       axios
         .get(`http://localhost:3000/api/v1/city/${selectedCityId}/location`)
-        .then((response) => {
-          setLocations(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching locations:", error);
-        });
+        .then((response) => setLocations(response.data))
+        .catch((error) => console.error("Error fetching locations:", error));
     }
   };
-
-  const [structures, setStructures] = useState([]);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/v1/structures")
-      .then((response) => {
-        setStructures(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -72,9 +74,8 @@ export default function NewListing() {
     formData.append("type", type);
     formData.append("listingType", listingType);
     formData.append("structure", structure);
-    if (selectedImage) {
-      formData.append("imgUrl", selectedImage); // Append selected image file
-    }
+    formData.append("author_id", userId);
+    formData.append("imgUrl", imgUrl);
 
     axios
       .post("http://localhost:3000/api/v1/listing/", formData, {
@@ -92,6 +93,19 @@ export default function NewListing() {
         window.location = "/uploadError";
       });
   };
+
+  function uploadImage() {
+    const res = axios
+      .post("http://localhost:3000/api/v1/other/img", selectedImage, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(console.log("File uploaded successfuly"))
+      .catch((error) => console.log(error));
+
+    setImgUrl(res.data.fileLocation);
+  }
 
   return (
     <div>
@@ -283,7 +297,8 @@ export default function NewListing() {
           accept="image/*"
           onChange={(e) => {
             if (e.target.files && e.target.files[0]) {
-              setSelectedImage(e.target.files[0]); // Set the selected image file
+              setSelectedImage(e.target.files[0]);
+              uploadImage();
             }
           }}
         />

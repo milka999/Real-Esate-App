@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 export default function ListingSmall({ listing }) {
   const date = new Date(listing.date_uploaded);
   const formattedDate = date.toLocaleDateString("de-De");
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   return (
     <div className="border-2 rounded-xl m-2 hover:border-green-600 w-full max-w-md bg-gray-100">
       <Link to={`${listing.id}`}>
@@ -19,7 +22,7 @@ export default function ListingSmall({ listing }) {
               {listing.title}
             </h2>
           </Link>
-          <p className="m-1">{listing.price} €</p>
+          <p className="m-1">{numberWithCommas(listing.price)} €</p>
         </div>
         <a href="">{listing.location}</a>
         <p className="m-1 font-light">

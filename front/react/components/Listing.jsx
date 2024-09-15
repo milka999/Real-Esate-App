@@ -10,6 +10,7 @@ import axios from "axios";
 export default function Listing() {
   const [listing, setListing] = useState([]);
   const { id } = useParams();
+  const [formattedPrice, setFormattedPrice] = useState("");
 
   useEffect(() => {
     axios
@@ -17,6 +18,9 @@ export default function Listing() {
       .then((response) => {
         console.log(response.data.rows[0]);
         setListing(response.data.rows[0]);
+        setFormattedPrice(
+          listing.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        );
       })
       .catch((error) => {
         console.error(error);
@@ -63,7 +67,7 @@ export default function Listing() {
                 <strong>Kvadratura:</strong> {listing.size} m²
               </li>
               <li>
-                <strong>Cijena:</strong> {listing.price}€
+                <strong>Cijena:</strong> {formattedPrice}€
               </li>
               <li>
                 <strong>Kontakt telefon:</strong> {listing.contact}
@@ -90,7 +94,7 @@ export default function Listing() {
                 className="p-3 border-2 border-gray-300 rounded-md mb-4"
               />
               <input
-                type="text"
+                type="tel"
                 placeholder="Broj Telefona"
                 className="p-3 border-2 border-gray-300 rounded-md mb-4"
               />

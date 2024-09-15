@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 
 function App() {
   const [listings, setListings] = useState([]);
+  const [count, setCount] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
@@ -28,11 +29,12 @@ function App() {
       .then((response) => {
         console.log(response.data);
         setListings(response.data);
+        setCount(listings.length);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [location.search]);
+  }, [listings.length, location.search]);
 
   return (
     <>
@@ -48,7 +50,7 @@ function App() {
         {/* Main content */}
         <div className="flex flex-col  m-5">
           <p className="ml-2 mb-2">
-            Pronađeno ukupno <b>X</b> oglasa{" "}
+            Pronađeno ukupno <b>{count}</b> oglasa{" "}
           </p>
           <div className="flex">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

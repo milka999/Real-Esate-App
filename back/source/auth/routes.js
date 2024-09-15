@@ -54,21 +54,23 @@ router.post("/login", async (req, res) => {
     }
 
     const user = userResult.rows[0];
-    const userRole = user.role_id === 1 ? "user" : "admin";
-
     const passwordMatch = await bcrypt.compare(password, user.pass);
 
     if (!passwordMatch) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user.id, role: userRole }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user.id, role: user.role_id },
+      "your_jwt_secret",
+      {
+        expiresIn: "1h",
+      }
+    );
 
     res.json({ token });
   } catch (error) {
-    console.error("Error logging in:", error);
+    console.error("Error logging in:", error); // Log the error to the console
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
