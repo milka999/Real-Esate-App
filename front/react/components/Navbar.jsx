@@ -6,9 +6,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check login status when component mounts
   useEffect(() => {
-    // Assume you store a token or login status in localStorage
     const token = localStorage.getItem("authToken");
     if (token) {
       setIsLoggedIn(true);
@@ -22,7 +20,6 @@ export default function Navbar() {
   }
 
   function handleLogoutClick() {
-    // Clear the token and set the user as logged out
     localStorage.removeItem("token");
     setIsLoggedIn(false);
     navigate("/");

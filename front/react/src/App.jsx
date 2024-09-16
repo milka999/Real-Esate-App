@@ -10,40 +10,37 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 function App() {
-  const [listings, setListings] = useState([]); // Should be an array
-  const [count, setCount] = useState(0); // Total number of listings
-  const [currentPage, setCurrentPage] = useState(1); // For tracking the current page
-  const [totalPages, setTotalPages] = useState(0); // Total number of pages
+  const [listings, setListings] = useState([]);
+  const [count, setCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const location = useLocation();
 
-  const listingsPerPage = 12; // Maximum listings per page
+  const listingsPerPage = 12;
 
   useEffect(() => {
-    // Get the query parameters
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
 
-    // Build the API endpoint based on the "type" parameter
     let apiUrl = `http://localhost:3000/api/v1/listings?page=${currentPage}&limit=${listingsPerPage}`;
+
     if (type) {
       apiUrl += `&type=${type}`;
     }
 
-    // Fetch listings
     axios
       .get(apiUrl)
       .then((response) => {
         const { listings, total, totalPages } = response.data;
-        setListings(listings); // Should be an array of listings
-        setCount(total); // Total number of listings
-        setTotalPages(totalPages); // Total number of pages
+        setListings(listings);
+        setCount(total);
+        setTotalPages(totalPages);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [currentPage, location.search]); // Re-fetch listings when page or search changes
+  }, [currentPage, location.search]);
 
-  // Handler for pagination (next and previous pages)
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
