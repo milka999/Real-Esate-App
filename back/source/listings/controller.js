@@ -4,28 +4,26 @@ const queries = require("./queries");
 const getListings = async (req, res) => {
   try {
     const {
-      type, // Add the 'type' query parameter
+      page = 1,
+      limit = 12,
+      type,
       type_id,
       structure_id,
       min_price,
       max_price,
       location_id,
       sort,
-      page = 1, // Page number, defaults to 1
-      limit = 12, // Number of listings per page, defaults to 12
     } = req.query;
 
-    // Base query
-    let query = queries.getAllListings;
+    let query = "SELECT * FROM listing";
     let queryParams = [];
     let conditions = [];
     let order_by = "";
 
-    // Add conditions based on provided query parameters
+    // Add conditions dynamically
     if (type) {
-      // 'type' query param filters by listing_type_id
       conditions.push(`listing_type_id = $${queryParams.length + 1}`);
-      queryParams.push(Number(type)); // Ensure it's a number
+      queryParams.push(Number(type));
     }
     if (type_id) {
       conditions.push(`type_id = $${queryParams.length + 1}`);
@@ -45,52 +43,65 @@ const getListings = async (req, res) => {
     }
     if (location_id) {
       conditions.push(`location_id = $${queryParams.length + 1}`);
-      queryParams.push(location_id);
-    }
-    if (sort) {
-      if (sort === "price_asc") {
-        order_by = "order by price asc";
-      } else if (sort === "price_desc") {
-        order_by = "order by price desc";
-      } else if (sort === "size_asc") {
-        order_by = "order by unit_size asc";
-      } else if (sort === "size_desc") {
-        order_by = "order by unit_size desc";
-      }
+      queryParams.push(Number(location_id));
     }
 
-    // Append conditions to query if any
+    // Apply conditions if any
     if (conditions.length > 0) {
       query += " WHERE " + conditions.join(" AND ");
     }
-    if (order_by !== "") {
-      query += " " + order_by;
+
+    // Apply sorting if specified
+    if (sort) {
+      switch (sort) {
+        case "price_asc":
+          order_by = " ORDER BY price ASC";
+          break;
+        case "price_desc":
+          order_by = " ORDER BY price DESC";
+          break;
+        case "size_asc":
+          order_by = " ORDER BY unit_size ASC";
+          break;
+        case "size_desc":
+          order_by = " ORDER BY unit_size DESC";
+          break;
+      }
     }
 
-    // Pagination logic: calculate offset and limit
+    if (order_by) {
+      query += order_by;
+    }
+
+    // Apply LIMIT and OFFSET for pagination
     const offset = (page - 1) * limit;
     query += ` LIMIT $${queryParams.length + 1} OFFSET $${
       queryParams.length + 2
     }`;
     queryParams.push(Number(limit), Number(offset));
 
-    // Execute the query with pagination
+    console.log("Final Query:", query); // Debugging output
+    console.log("Parameters:", queryParams); // Debugging output
+
+    // Execute the query
     const result = await pool.query(query, queryParams);
 
-    // Get the total count of listings without pagination (for UI purposes)
-    const countQuery = queries.getAllListings; // Assuming `queries.getAllListings` is the base query without pagination
+    // Construct count query for total count (without LIMIT/OFFSET)
+    const countQuery = "SELECT COUNT(*) FROM listing";
+    const countConditions =
+      conditions.length > 0 ? " WHERE " + conditions.join(" AND ") : "";
     const countResult = await pool.query(
-      countQuery,
-      queryParams.slice(0, queryParams.length - 2)
-    ); // Use the same conditions, without LIMIT and OFFSET
+      countQuery + countConditions,
+      queryParams.slice(0, -2)
+    );
 
-    const totalCount = countResult.rowCount; // Get total number of listings
+    const totalCount = parseInt(countResult.rows[0].count, 10);
 
-    // Return the listings and total count for pagination
+    // Send response with results and pagination info
     res.status(200).json({
       listings: result.rows,
-      total: totalCount, // Total number of listings for pagination
-      currentPage: page,
+      total: totalCount,
+      currentPage: Number(page),
       totalPages: Math.ceil(totalCount / limit),
     });
   } catch (error) {
@@ -135,7 +146,6 @@ const deleteListing = async (req, res) => {
     const id = parseInt(req.params.id);
     await pool.query(queries.deleteListing, [id]);
     res.status(200);
-    // redirekcija neka
   } catch (error) {
     console.error("Database query error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -181,7 +191,6 @@ const editListing = async (req, res) => {
       id,
     ]);
     res.status(200).json({ message: "Listing edited" });
-    // isto neka redirekcija ?
   } catch (error) {
     console.error("Database query error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -224,7 +233,6 @@ const addListing = async (req, res) => {
       structure_id,
     ]);
     res.status(201).json({ message: "New listing created" });
-    // isto neka redirekcija ?
   } catch (error) {
     console.error("Database query error:", error);
     res.status(500).json({ error: "Internal Server Error" });
