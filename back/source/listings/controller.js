@@ -7,10 +7,13 @@ const getListings = async (req, res) => {
       page = 1,
       limit = 12,
       type,
+      author_id,
       type_id,
       structure_id,
       min_price,
       max_price,
+      min_size,
+      max_size,
       location_id,
       sort,
     } = req.query;
@@ -24,6 +27,10 @@ const getListings = async (req, res) => {
     if (type) {
       conditions.push(`listing_type_id = $${queryParams.length + 1}`);
       queryParams.push(Number(type));
+    }
+    if (author_id) {
+      conditions.push(`author_id = $${queryParams.length + 1}`);
+      queryParams.push(Number(author_id));
     }
     if (type_id) {
       conditions.push(`type_id = $${queryParams.length + 1}`);
@@ -40,6 +47,14 @@ const getListings = async (req, res) => {
     if (max_price) {
       conditions.push(`price <= $${queryParams.length + 1}`);
       queryParams.push(Number(max_price));
+    }
+    if (min_size) {
+      conditions.push(`unit_size >= $${queryParams.length + 1}`);
+      queryParams.push(Number(min_size));
+    }
+    if (max_size) {
+      conditions.push(`unit_size <= $${queryParams.length + 1}`);
+      queryParams.push(Number(max_size));
     }
     if (location_id) {
       conditions.push(`location_id = $${queryParams.length + 1}`);
@@ -207,13 +222,13 @@ const addListing = async (req, res) => {
       parking,
       garden,
       terrace,
-      date_uploaded,
-      date_updated,
       location_id,
       author_id,
       type_id,
       listing_type_id,
       structure_id,
+      contact,
+      img_url,
     } = req.body;
 
     const newListing = await pool.query(queries.newListing, [
@@ -224,13 +239,13 @@ const addListing = async (req, res) => {
       parking,
       garden,
       terrace,
-      date_uploaded,
-      date_updated,
       location_id,
       author_id,
       type_id,
       listing_type_id,
       structure_id,
+      contact,
+      img_url,
     ]);
     res.status(201).json({ message: "New listing created" });
   } catch (error) {

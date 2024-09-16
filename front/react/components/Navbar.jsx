@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -51,13 +51,13 @@ export default function Navbar() {
       {isLoggedIn ? (
         <div>
           <Link
-            to={`/?userId=${userId}`}
+            to={`/?author_id=${userId}`}
             className="text-green-600 border-2 border-green-600 rounded-md p-2 hover:bg-black hover:text-white hover:border-black hover:border-solid hover:border-2 mr-3"
           >
             Moji oglasi
           </Link>
           <Link
-            to="newListing"
+            to="/newListing"
             className="text-green-600 border-2 border-green-600 rounded-md p-2 hover:bg-black hover:text-white hover:border-black hover:border-solid hover:border-2 mr-3"
           >
             Novi oglas

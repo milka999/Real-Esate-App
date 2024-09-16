@@ -9,20 +9,20 @@ const getSale = "select * from listing where listing_type_id = 1";
 const deleteListing = "delete from listing where id = $1";
 
 const newListing = `INSERT INTO listing (
-    title,
-    description,
-    price,
-    unit_size,
-    parking,
-    garden,
-    terrace,
-    date_uploaded,
-    date_updated,
-    location_id,
-    author_id,
-    type_id,
-    listing_type_id,
-    structure_id
+      title,
+      description,
+      price,
+      unit_size,
+      parking,
+      garden,
+      terrace,
+      location_id,
+      author_id,
+      type_id,
+      listing_type_id,
+      structure_id,
+      contact,
+      img_url
 ) VALUES
 ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
 

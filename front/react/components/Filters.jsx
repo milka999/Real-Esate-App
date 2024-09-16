@@ -1,23 +1,9 @@
-//import Multiselect from 'multiselect-react-dropdown'
-import Multiselect from "multiselect-react-dropdown";
 import "rc-slider/assets/index.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function Filters() {
-  const [propertyType, setPropertyType] = useState([]);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/v1/types")
-      .then((response) => {
-        console.log(response.data);
-        setPropertyType(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
+  const [type, setType] = useState([]);
   const [cities, setCities] = useState([]);
   useEffect(() => {
     axios
@@ -31,48 +17,7 @@ export default function Filters() {
       });
   }, []);
 
-  const [locations, setLocations] = useState([]);
-
-  const [selectedValueCity, setSelectedValueCity] = useState({});
-  const [selectedValueLocation, setSelectedValueLocation] = useState({});
-  const [selectedValueType, setSelectedValueType] = useState({});
-
   // trebaće da se promijene sve ove funkcije da bi slale odgovarajuće vrijednost back-u
-  const onSelectCity = (selectedList) => {
-    if (selectedList.length > 0) {
-      const cityId = selectedList[0].id;
-      axios
-        .get(`http://localhost:3000/api/v1/city/${cityId}/location`)
-        .then((response) => {
-          setLocations(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching locations:", error);
-        });
-    } else {
-      setLocations([]);
-    }
-  };
-
-  function onRemoveCity() {
-    setSelectedValueCity({});
-  }
-
-  function onSelectLocation() {
-    setSelectedValueLocation({});
-  }
-
-  function onRemoveLocation() {
-    setSelectedValueLocation({});
-  }
-
-  function onSelectType() {
-    setSelectedValueType({});
-  }
-
-  function onRemoveType() {
-    setSelectedValueType({});
-  }
 
   return (
     <div className="h-screen w-[400px] ml-4 mr-4">
@@ -88,79 +33,99 @@ export default function Filters() {
         </div>
         <form>
           <div>
-            <div>
-              <Multiselect
-                options={cities}
-                selectedValues={selectedValueCity}
-                onSelect={onSelectCity}
-                onRemove={onRemoveCity}
-                displayValue="name"
-                placeholder="Odaberite grad"
-                className="border-2 border-black rounded-lg m-2"
+            <select
+              name="city"
+              onChange={handleCityChange}
+              className="p-2 rounded-md border-2 border-black m-2"
+            >
+              {/* <option value="" disabled selected>
+              Grad
+            </option> */}
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="location"
+              value={location}
+              onChange={(e) => setLocation(Number(e.target.value))}
+              className="p-2 rounded-md border-2 border-black m-2"
+            >
+              {/* <option value="" disabled selected>
+              Naselje
+            </option> */}
+              {locations.map((loc) => (
+                <option key={loc.id} value={loc.id}>
+                  {loc.name}
+                </option>
+              ))}
+            </select>
+            <p className="m-2">Tip nekretnine</p>
+            <div className="flex flex-row space-x-3 m-2">
+              <label htmlFor="stan">Stan</label>
+              <input
+                type="radio"
+                name="type"
+                value={1}
+                id="stan"
+                checked={type === 1}
+                onChange={() => setType(1)}
               />
             </div>
-            <div>
-              <Multiselect
-                options={locations}
-                selectedValues={selectedValueLocation}
-                onSelect={onSelectLocation}
-                onRemove={onRemoveLocation}
-                displayValue="name"
-                placeholder="Odaberite naselje"
-                className="border-2 border-black rounded-lg m-2"
+
+            <div className="flex flex-row space-x-3 m-2">
+              <label htmlFor="kuca">Kuća</label>
+              <input
+                type="radio"
+                name="type"
+                value={2}
+                id="kuca"
+                checked={type === 2}
+                onChange={() => setType(2)}
               />
             </div>
-            <div>
-              <Multiselect
-                options={propertyType}
-                selectedValues={selectedValueType}
-                onSelect={onSelectType}
-                onRemove={onRemoveType}
-                displayValue="name"
-                placeholder="Tip nekretnine"
-                className="border-2 border-black rounded-lg m-2"
+            <div className="flex flex-row space-x-3 m-2">
+              <label htmlFor="poslovni-prostor">Poslovni prostor</label>
+              <input
+                type="radio"
+                name="type"
+                value={3}
+                id="poslovni-prostor"
+                checked={type === 3}
+                onChange={() => setType(3)}
               />
             </div>
-            <div>
-              <Multiselect
-                options={propertyType}
-                selectedValues={selectedValueType}
-                onSelect={onSelectType}
-                onRemove={onRemoveType}
-                displayValue="name"
-                placeholder="Struktura stana"
-                className="border-2 border-black rounded-lg m-2"
+            <div className="flex flex-row space-x-3 m-2">
+              <label htmlFor="plac">Plac</label>
+              <input
+                type="radio"
+                name="type"
+                value={4}
+                id="plac"
+                checked={type === 4}
+                onChange={() => setType(4)}
               />
             </div>
           </div>
           <div className="sliders">
             <div>
-              <div>
-                <p className="m-2">Cijena: </p>
-                <input
-                  className="border-2 border-black rounded-lg m-2 p-1"
-                  placeholder="Najniža"
-                  type="number"
-                />
-                <input
-                  className="border-2 border-black rounded-lg m-2 p-1"
-                  placeholder="Najviša"
-                  type="number"
-                />
-              </div>
-              <div>
-                <p className="m-2">Kvadratura: </p>
-                <input
-                  className="border-2 border-black rounded-lg m-2 p-1"
-                  placeholder="Najniža"
-                  type="number"
-                />
-                <input
-                  className="border-2 border-black rounded-lg m-2 p-1"
-                  placeholder="Najviša"
-                  type="number"
-                />
-              </div>
+              <p className="ml-2">Cijena ili visina mjesečne rente:</p>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                className="border-2 border-black rounded-md p-2 m-2"
+              />
+              <p className="ml-2">Kvadartura:</p>
+              <input
+                type="number"
+                value={unitSize}
+                onChange={(e) => setUnitSize(Number(e.target.value))}
+                className="border-2 border-black rounded-md p-2 m-2"
+              />
             </div>
             <div className="m-2">
               <button

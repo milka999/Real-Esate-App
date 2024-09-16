@@ -1,8 +1,8 @@
 const pool = require("../db");
 const queries = require("./queries");
-const multer = require("multer");
+// const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
+// const fs = require("fs");
 
 const getCities = async (req, res) => {
   try {
@@ -45,9 +45,9 @@ const getStructures = async (req, res) => {
   }
 };
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = "uploads/";
+    const uploadDir = "\\uploads";
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir);
     }
@@ -71,12 +71,11 @@ const uploadImage = async (req, res) => {
     message: "File uploaded successfully.",
     fileLocation: filePath,
   });
-};
+}; */
 
 module.exports = {
   getCities,
   getLocations,
   getTypes,
   getStructures,
-  uploadImage,
 };

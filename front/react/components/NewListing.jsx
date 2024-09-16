@@ -22,6 +22,7 @@ export default function NewListing() {
   const [cities, setCities] = useState([]);
   const [locations, setLocations] = useState([]);
   const [structures, setStructures] = useState([]);
+  const [contact, setContact] = useState("");
 
   const [userId, setUserId] = useState(null); // To store author (user) ID
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export default function NewListing() {
       // Decode the token to get the user information (author ID)
       const decodedToken = JSON.parse(atob(token.split(".")[1]));
       setUserId(decodedToken.userId); // Set the user ID (author ID)
+      console.log(userId);
     }
 
     // Fetch cities and structures on mount
@@ -48,10 +50,10 @@ export default function NewListing() {
       .get("http://localhost:3000/api/v1/structures")
       .then((response) => setStructures(response.data))
       .catch((error) => console.error(error));
-  }, [navigate]);
+  }, [navigate, userId]);
 
   const handleCityChange = (event) => {
-    const selectedCityId = event.target.value;
+    const selectedCityId = Number(event.target.value);
     if (selectedCityId) {
       axios
         .get(`http://localhost:3000/api/v1/city/${selectedCityId}/location`)
@@ -60,54 +62,85 @@ export default function NewListing() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create form data object for image upload
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("unitSize", unitSize);
-    formData.append("parking", parking);
-    formData.append("garden", garden);
-    formData.append("terrace", terrace);
-    formData.append("location", location);
-    formData.append("type", type);
-    formData.append("listingType", listingType);
-    formData.append("structure", structure);
-    formData.append("author_id", userId);
-    formData.append("imgUrl", imgUrl);
+    if (
+      !title ||
+      !description ||
+      !price ||
+      !unitSize ||
+      !location ||
+      !userId ||
+      !type ||
+      !listingType ||
+      !structure
+    ) {
+      console.error("All required fields must be filled out.");
+      return;
+    }
 
-    axios
-      .post("http://localhost:3000/api/v1/listing/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          window.location = "/";
+    const formattedPrice = parseInt(price);
+    const formattedUnitSize = parseInt(unitSize);
+
+    if (isNaN(formattedPrice) || isNaN(formattedUnitSize)) {
+      console.error("Price and Unit Size must be valid numbers.");
+      return;
+    }
+
+    try {
+      // Upload the image and wait for it to complete
+      await uploadImage();
+
+      // Submit the listing data after image upload
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/listings",
+        {
+          title,
+          description,
+          price: formattedPrice,
+          unit_size: formattedUnitSize,
+          parking,
+          garden,
+          terrace,
+          location_id: location,
+          author_id: userId,
+          type_id: type,
+          listing_type_id: listingType,
+          structure_id: structure,
+          contact,
+          img_url: imgUrl,
         }
-      })
-      .catch((error) => {
-        console.error("Upload error:", error);
-        window.location = "/uploadError";
-      });
+      );
+      console.log("Listing created successfully:", response.status);
+    } catch (error) {
+      console.error("Error creating listing:", error);
+    }
   };
 
-  function uploadImage() {
-    const res = axios
-      .post("http://localhost:3000/api/v1/other/img", selectedImage, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(console.log("File uploaded successfuly"))
-      .catch((error) => console.log(error));
+  const uploadImage = async () => {
+    if (!selectedImage) return;
 
-    setImgUrl(res.data.fileLocation);
-  }
+    const formData = new FormData();
+    formData.append("file", selectedImage);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setImgUrl(response.data.fileLocation);
+      console.log("File uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
     <>
@@ -215,9 +248,9 @@ export default function NewListing() {
             onChange={handleCityChange}
             className="p-2 rounded-md border-2 border-black m-2"
           >
-            <option value="" disabled selected>
+            {/* <option value="" disabled selected>
               Grad
-            </option>
+            </option> */}
             {cities.map((city) => (
               <option key={city.id} value={city.id}>
                 {city.name}
@@ -231,9 +264,9 @@ export default function NewListing() {
             onChange={(e) => setLocation(Number(e.target.value))}
             className="p-2 rounded-md border-2 border-black m-2"
           >
-            <option value="" disabled selected>
+            {/* <option value="" disabled selected>
               Naselje
-            </option>
+            </option> */}
             {locations.map((loc) => (
               <option key={loc.id} value={loc.id}>
                 {loc.name}
@@ -318,15 +351,22 @@ export default function NewListing() {
             onChange={(e) => setStructure(Number(e.target.value))}
             className="p-2 rounded-md border-2 border-black m-2"
           >
-            <option value="" disabled selected>
+            {/* <option value="" disabled selected>
               Struktura objekta
-            </option>
+            </option> */}
             {structures.map((structure) => (
               <option key={structure.id} value={structure.id}>
                 {structure.name}
               </option>
             ))}
           </select>
+          <input
+            placeholder="Kontakt telefon"
+            type="text"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+            className="border-2 border-black rounded-md p-2 m-2"
+          ></input>
           {/* Image upload field */}
           <p className="m-2">Upload slika: </p>
           <input
