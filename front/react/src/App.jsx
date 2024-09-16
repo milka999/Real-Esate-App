@@ -21,11 +21,16 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
+    const userId = params.get("userId");
 
     let apiUrl = `http://localhost:3000/api/v1/listings?page=${currentPage}&limit=${listingsPerPage}`;
 
     if (type) {
       apiUrl += `&type=${type}`;
+    }
+
+    if (userId) {
+      apiUrl += `&type=${userId}`;
     }
 
     axios

@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
       setIsLoggedIn(true);
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      setUserId(decodedToken.userId);
     } else {
       setIsLoggedIn(false);
     }
@@ -47,6 +50,12 @@ export default function Navbar() {
       {/* Conditionally render buttons based on login status */}
       {isLoggedIn ? (
         <div>
+          <Link
+            to={`/?userId=${userId}`}
+            className="text-green-600 border-2 border-green-600 rounded-md p-2 hover:bg-black hover:text-white hover:border-black hover:border-solid hover:border-2 mr-3"
+          >
+            Moji oglasi
+          </Link>
           <Link
             to="newListing"
             className="text-green-600 border-2 border-green-600 rounded-md p-2 hover:bg-black hover:text-white hover:border-black hover:border-solid hover:border-2 mr-3"
