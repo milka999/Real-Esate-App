@@ -5,6 +5,23 @@ import { useEffect, useState } from "react";
 export default function Filters() {
   const [type, setType] = useState([]);
   const [cities, setCities] = useState([]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [minUnitSize, setMinUnitSize] = useState(0);
+  const [maxUnitSize, setMaxUnitSize] = useState(0);
+  const [location, setLocation] = useState(0);
+  const [locations, setLocations] = useState([]);
+
+  const handleCityChange = (event) => {
+    const selectedCityId = Number(event.target.value);
+    if (selectedCityId) {
+      axios
+          .get(`http://localhost:3000/api/v1/city/${selectedCityId}/location`)
+          .then((response) => setLocations(response.data))
+          .catch((error) => console.error("Error fetching locations:", error));
+    }
+  };
+
   useEffect(() => {
     axios
       .get("http://localhost:3000/api/v1/cities")
@@ -17,7 +34,11 @@ export default function Filters() {
       });
   }, []);
 
-  // trebaće da se promijene sve ove funkcije da bi slale odgovarajuće vrijednost back-u
+  // apenduj ih sve u neki query string i onda ga kad se klikne filter primijene ti filteri
+
+  function applyFilters() {
+
+  }
 
   return (
     <div className="h-screen w-[400px] ml-4 mr-4">
@@ -112,25 +133,37 @@ export default function Filters() {
           </div>
           <div className="sliders">
             <div>
-              <p className="ml-2">Cijena ili visina mjesečne rente:</p>
+              <p>Cijena: </p>
               <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-                className="border-2 border-black rounded-md p-2 m-2"
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  className="border-2 border-black rounded-md p-2 m-2"
+              />
+              <input
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="border-2 border-black rounded-md p-2 m-2"
               />
               <p className="ml-2">Kvadartura:</p>
               <input
-                type="number"
-                value={unitSize}
-                onChange={(e) => setUnitSize(Number(e.target.value))}
-                className="border-2 border-black rounded-md p-2 m-2"
+                  type="number"
+                  value={minUnitSize}
+                  onChange={(e) => setMinUnitSize(Number(e.target.value))}
+                  className="border-2 border-black rounded-md p-2 m-2"
+              />
+              <input
+                  type="number"
+                  value={maxUnitSize}
+                  onChange={(e) => setMaxUnitSize(Number(e.target.value))}
+                  className="border-2 border-black rounded-md p-2 m-2"
               />
             </div>
             <div className="m-2">
               <button
-                type="submit"
-                className="bg-green-500 border-2 border-black rounded-md p-0.5 hover:border-green-500"
+                  onClick={applyFilters}
+                  className="bg-green-500 border-2 border-black rounded-md p-0.5 hover:border-green-500"
               >
                 Filtriraj
               </button>
