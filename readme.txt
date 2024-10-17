@@ -6,7 +6,7 @@ Makni multiselect stavi normalni select
 
 Slike čuvaj u public folderu front-a i neka ti response vraća relativnu putanju
 
-Filteri ne rade
+Filteri, ne radi za lokaciju
 
 Reset filtera
 

@@ -7,7 +7,7 @@ const pool = new Pool({
     host: "localhost",
     database: "real_estate_db",
     password: "admin",
-    port:"5432"
+    port:"5433"
 });
 
 module.exports = pool;
